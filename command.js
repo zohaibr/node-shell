@@ -3,96 +3,98 @@ var request = require('request');
 
 let commandManager = {
 
-  pwd: function() {
-    process.stdout.write(process.cwd());
-    this.prompt();
+  pwd: function(file, done) {
+    let output = process.cwd();
+    done(output);
   },
 
-  date: function() {
-    var date = new Date().toString().trim();
-    process.stdout.write(date);
-    this.prompt();
+  date: function(file, done) {
+    done(Date());
   },
 
  prompt: function() {
     process.stdout.write('\nprompt > ');
   },
 
-  ls: function() {
+  ls: function(file, done) {
     fs.readdir('.', function(err, filenames) {
       if (err) {
          console.error(err);
-         this.prompt();
          return;
       }
 
+      let output = '';
       filenames.forEach(function(file) {
-        process.stdout.write(file.toString().trim() + '\n');
+        output += file.toString().trim() + '\n';
       });
-      this.prompt();
+      done(output);
     });
 
   },
 
-  echo: function(stringArray) {
+  echo: function(stringArray, done) {
+
+    let output = '';
 
     if (stringArray[0] === '$PATH') {
       let path = process.env.PATH;
-      process.stdout.write(path);
-      this.prompt();
+      done(path);
       return;
     }
-    process.stdout.write(stringArray.join(' '));
-    this.prompt();
+    done(stringArray.join(' '));
   },
 
-  cat: function(filenames) {
+  cat: function(filenames, done) {
     let allFileContents = [];
 
     filenames.forEach((file) => {
        fs.readFile('./' + file, (err, contents) => {
          allFileContents.push(contents);
          if (allFileContents.length === filenames.length) {
-           process.stdout.write(allFileContents.join('\n'));
-           this.prompt();
+           done(allFileContents.join('\n'));
          }
-       }) ;
+       });
     });
 
   },
 
-  head: function(filenames) {
+  head: function(filenames, done) {
+    let output = '';
     fs.readFile('./' + filenames[0], (err, content) => {
       let contents = content.toString().split('\n');
       for (var i = 0; i < 5; i++) {
-        process.stdout.write(contents[i] + '\n');
+        output += contents[i] + '\n';
       }
-      this.prompt();
+      done(output);
     });
   },
 
-  tail: function(filenames) {
+  tail: function(filenames, done) {
+    let output = '';
     fs.readFile('./' + filenames[0], (err, content) => {
       let contents = content.toString().split('\n');
       if (contents.lenth < 5) {
-        process.stdout.write(contents + '\n');
+        done(contents + '\n');
       } else {
         for (var i = contents.length - 1; i > contents.length - 5; i--) {
-          process.stdout.write(contents[i] + '\n');
+          output += contents[i] + '\n';
         }
       }
-      this.prompt();
+      done(output);
     });
   },
 
-  curl: function(siteaddress) {
+  curl: function(siteaddress, done) {
     request(siteaddress[0].toString(), (error, response, body) => {
       if (!error && response.statusCode == 200) {
-        process.stdout.write(body);
-        this.prompt();
+        done(body);
       }
     });
 
+  },
+
+  find: function(directory, done) {
+    
   }
 };
 
