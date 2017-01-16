@@ -19,7 +19,7 @@ let commandManager = {
 
   ls: function() {
     fs.readdir('.', function(err, filenames) {
-      if (err) { 
+      if (err) {
          console.error(err);
          this.prompt();
          return;
@@ -35,7 +35,7 @@ let commandManager = {
 
   echo: function(stringArray) {
 
-    if(stringArray[0] === '$PATH') {
+    if (stringArray[0] === '$PATH') {
       let path = process.env.PATH;
       process.stdout.write(path);
       this.prompt();
@@ -51,11 +51,36 @@ let commandManager = {
     filenames.forEach((file) => {
        fs.readFile('./' + file, (err, contents) => {
          allFileContents.push(contents);
-         if(allFileContents.length === filenames.length) {
+         if (allFileContents.length === filenames.length) {
            process.stdout.write(allFileContents.join('\n'));
            this.prompt();
          }
-       });
+       }) ;
+    });
+
+  },
+
+  head: function(filenames) {
+    fs.readFile('./' + filenames[0], (err, content) => {
+      let contents = content.toString().split('\n');
+      for (var i = 0; i < 5; i++) {
+        process.stdout.write(contents[i] + '\n');
+      }
+      this.prompt();
+    });
+  },
+
+  tail: function(filenames) {
+    fs.readFile('./' + filenames[0], (err, content) => {
+      let contents = content.toString().split('\n');
+      if (contents.lenth < 5) {
+        process.stdout.write(contents + '\n');
+      } else {
+        for (var i = contents.length - 1; i > contents.length - 5; i--) {
+          process.stdout.write(contents[i] + '\n');
+        }
+      }
+      this.prompt();
     });
   }
 };
