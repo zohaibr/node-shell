@@ -22,6 +22,10 @@ let commandManager = {
         process.stdout.write(file.toString().trim() + '\n');
       });
     });
+  },
+
+  echo: function(stringArray) {
+    process.stdout.write(stringArray.join(' '));
   }
 };
 
