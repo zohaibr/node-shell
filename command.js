@@ -1,4 +1,5 @@
 var fs = require('fs');
+var request = require('request');
 
 let commandManager = {
 
@@ -82,6 +83,16 @@ let commandManager = {
       }
       this.prompt();
     });
+  },
+
+  curl: function(siteaddress) {
+    request(siteaddress[0].toString(), (error, response, body) => {
+      if (!error && response.statusCode == 200) {
+        process.stdout.write(body);
+        this.prompt();
+      }
+    });
+
   }
 };
 
