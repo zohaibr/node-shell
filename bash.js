@@ -11,5 +11,4 @@ process.stdin.on('data', function (data) {
   } else {
     command[cmd[0]](cmd.slice(1));
   }
-  command.prompt();
 });
